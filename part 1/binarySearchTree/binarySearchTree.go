@@ -12,6 +12,7 @@ type Tree struct {
 type Node struct {
 	index  int
 	value  int
+	size   int // total node
 	parent *Node
 	left   *Node
 	right  *Node
@@ -20,15 +21,19 @@ type Node struct {
 func (*Node) insertNode(n *Node, index int, v int) bool {
 	if v < n.value {
 		if n.left == nil {
-			n.left = &Node{index, v, n, nil, nil}
+			n.left = &Node{index, v, 1, n, nil, nil}
+			n.size++
 			return true
 		}
+		n.size++
 		return n.insertNode(n.left, index, v)
 	}
 	if n.right == nil {
-		n.right = &Node{index, v, n, nil, nil}
+		n.right = &Node{index, v, 1, n, nil, nil}
+		n.size++
 		return true
 	}
+	n.size++
 	return n.insertNode(n.right, index, v)
 }
 
@@ -36,7 +41,7 @@ func (*Tree) insertTree(t *Tree, v int) bool {
 	length := t.lengthNode
 
 	if t.root == nil {
-		t.root = &Node{t.lengthNode, v, nil, nil, nil}
+		t.root = &Node{t.lengthNode, v, 1, nil, nil, nil}
 		t.lengthNode++
 		return true
 	}
@@ -103,10 +108,12 @@ func removeLeaf(n *Node) {
 	if parent.left == n {
 		parent.left = nil
 		n = &Node{}
+		updateAfterDeleted(parent)
 		return
 	}
 	parent.right = nil
 	n = &Node{}
+	updateAfterDeleted(parent)
 	return
 }
 
@@ -117,11 +124,14 @@ func removeChild(n *Node) {
 	if n.left == nil {
 		*n = *n.right
 		n.parent = temp.parent
+		updateAfterDeleted(n.parent)
 		return
 	}
 
 	*n = *n.left
 	n.parent = temp.parent
+	updateAfterDeleted(n.parent)
+
 	return
 }
 
@@ -136,7 +146,20 @@ func removeInternal(n *Node) {
 	n.value = nChildLeft.value
 	n.index = nChildLeft.index
 	fmt.Println("node changed:", n)
-	removeLeaf(nChildLeft)
+	checkType := checkTypeNode(nChildLeft)
+	if checkType == "leaf" {
+		removeLeaf(nChildLeft)
+	} else {
+		removeChild(nChildLeft)
+	}
+	return
+}
+
+func updateAfterDeleted(n *Node) {
+	n.size--
+	if n.parent != nil {
+		updateAfterDeleted(n.parent)
+	}
 	return
 }
 
@@ -205,6 +228,7 @@ func main() {
 	t.insertTree(t, 34)
 	t.insertTree(t, 17)
 	t.insertTree(t, 25)
+	t.insertTree(t, 28)
 	t.insertTree(t, 66)
 	t.insertTree(t, 50)
 	t.insertTree(t, 71)
