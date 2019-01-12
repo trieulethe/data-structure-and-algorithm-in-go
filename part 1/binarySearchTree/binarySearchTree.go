@@ -44,24 +44,24 @@ func (*Tree) insertTree(t *Tree, v int) bool {
 	return t.root.insertNode(t.root, length, v)
 }
 
-func (*Node) binarySearchNode(n *Node, k int) bool {
+func binarySearchNode(n *Node, k int) bool {
 	if n == nil {
 		return false
 	}
 	if k == n.value {
 		return true
 	} else if k < n.value {
-		return n.binarySearchNode(n.left, k)
+		return binarySearchNode(n.left, k)
 	} else {
-		return n.binarySearchNode(n.right, k)
+		return binarySearchNode(n.right, k)
 	}
 }
 
-func (*Tree) searchValue(t *Tree, k int) bool {
+func searchValue(t *Tree, k int) bool {
 	if t.root == nil {
 		return false
 	}
-	return t.root.binarySearchNode(t.root, k)
+	return binarySearchNode(t.root, k)
 }
 
 func searchIndex(n *Node, id int) *Node {
@@ -164,22 +164,39 @@ func (*Tree) remove(t *Tree, id int) {
 	return
 }
 
-func (*Node) printNode(n *Node) {
+func printNode(n *Node) {
 	if n == nil {
 		return
 	}
 	fmt.Println("node: ", n)
-	n.printNode(n.left)
-	n.printNode(n.right)
+	printNode(n.left)
+	printNode(n.right)
 }
 
-func (*Tree) printTree(t *Tree) {
+func printTree(t *Tree) {
 	if t.root == nil {
 		return
 	}
 	fmt.Println()
-	t.root.printNode(t.root)
+	printNode(t.root)
 	fmt.Println()
+}
+
+func rangeQuery(n *Node, k1 int, k2 int) {
+	if n == nil {
+		return
+	}
+
+	if k1 <= n.value && n.value <= k2 {
+		fmt.Println("n in range", n)
+		rangeQuery(n.left, k1, k2)
+		rangeQuery(n.right, k1, k2)
+		return
+	} else if n.value < k1 {
+		rangeQuery(n.right, k1, k2)
+	} else if k2 < n.value {
+		rangeQuery(n.left, k1, k2)
+	}
 }
 
 func main() {
@@ -193,13 +210,19 @@ func main() {
 	t.insertTree(t, 71)
 	t.insertTree(t, 68)
 	t.insertTree(t, 75)
-	t.printTree(t)
+	printTree(t)
 
 	fmt.Println()
 
-	t.remove(t, 3)
+	rangeQuery(t.root, 55, 72)
+	fmt.Println()
 
-	t.printTree(t)
+	t.remove(t, 3)
+	t.remove(t, 1)
+	t.remove(t, 2)
+	t.remove(t, 4)
+
+	printTree(t)
 	fmt.Println()
 
 }
