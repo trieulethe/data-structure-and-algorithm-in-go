@@ -136,16 +136,16 @@ func removeChild(n *Node) {
 }
 
 func removeInternal(n *Node) {
-	fmt.Println("node internal:", n)
-	parent := n.parent
-	fmt.Println("parent node:", parent)
-	fmt.Println("parent node:", parent.right)
-	fmt.Println("parent node:", *parent.right)
+	// fmt.Println("node internal:", n)
+	// parent := n.parent
+	// fmt.Println("parent node:", parent)
+	// fmt.Println("parent node:", parent.right)
+	// fmt.Println("parent node:", *parent.right)
 	nChildLeft := n.getElementSideLeft(n.right)
-	fmt.Println("left node:", nChildLeft)
+	// fmt.Println("left node:", nChildLeft)
 	n.value = nChildLeft.value
 	n.index = nChildLeft.index
-	fmt.Println("node changed:", n)
+	// fmt.Println("node changed:", n)
 	checkType := checkTypeNode(nChildLeft)
 	if checkType == "leaf" {
 		removeLeaf(nChildLeft)
@@ -222,23 +222,48 @@ func rangeQuery(n *Node, k1 int, k2 int) {
 	}
 }
 
+func treeSelect(i int, n *Node) {
+	var size int
+	if n.left == nil {
+		size = 0
+	} else {
+		size = n.left.size
+	}
+
+	if i <= size && size != 0 {
+		treeSelect(i, n.left)
+	} else if i == size+1 {
+		fmt.Println("i th:", n)
+		return
+	} else {
+		treeSelect(i-size-1, n.right)
+	}
+}
+
 func main() {
 	t := &Tree{}
 
-	t.insertTree(t, 34)
+	t.insertTree(t, 44)
+	t.insertTree(t, 23)
 	t.insertTree(t, 17)
-	t.insertTree(t, 25)
-	t.insertTree(t, 28)
-	t.insertTree(t, 66)
-	t.insertTree(t, 50)
+	t.insertTree(t, 63)
+	t.insertTree(t, 51)
+	t.insertTree(t, 33)
+	t.insertTree(t, 8)
+	t.insertTree(t, 20)
+	t.insertTree(t, 74)
 	t.insertTree(t, 71)
-	t.insertTree(t, 68)
-	t.insertTree(t, 75)
+	t.insertTree(t, 72)
+	t.insertTree(t, 48)
+	t.insertTree(t, 58)
+	t.insertTree(t, 46)
 	printTree(t)
 
 	fmt.Println()
-
-	rangeQuery(t.root, 55, 72)
+	for i := 1; i <= 14; i++ {
+		treeSelect(i, t.root)
+	}
+	// rangeQuery(t.root, 55, 72)
 	fmt.Println()
 
 	t.remove(t, 3)
