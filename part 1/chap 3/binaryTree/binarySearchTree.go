@@ -136,16 +136,9 @@ func removeChild(n *Node) {
 }
 
 func removeInternal(n *Node) {
-	// fmt.Println("node internal:", n)
-	// parent := n.parent
-	// fmt.Println("parent node:", parent)
-	// fmt.Println("parent node:", parent.right)
-	// fmt.Println("parent node:", *parent.right)
 	nChildLeft := n.getElementSideLeft(n.right)
-	// fmt.Println("left node:", nChildLeft)
 	n.value = nChildLeft.value
 	n.index = nChildLeft.index
-	// fmt.Println("node changed:", n)
 	checkType := checkTypeNode(nChildLeft)
 	if checkType == "leaf" {
 		removeLeaf(nChildLeft)
