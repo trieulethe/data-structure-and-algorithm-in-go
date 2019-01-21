@@ -13,6 +13,7 @@ type Node struct {
 	index  int
 	value  int
 	size   int // total node
+	rank   int // height of node
 	parent *Node
 	left   *Node
 	right  *Node
@@ -21,7 +22,7 @@ type Node struct {
 func (*Node) insertNode(n *Node, index int, v int) bool {
 	if v < n.value {
 		if n.left == nil {
-			n.left = &Node{index, v, 1, n, nil, nil}
+			n.left = &Node{index, v, 1, n.rank + 1, n, nil, nil}
 			n.size++
 			return true
 		}
@@ -29,7 +30,7 @@ func (*Node) insertNode(n *Node, index int, v int) bool {
 		return n.insertNode(n.left, index, v)
 	}
 	if n.right == nil {
-		n.right = &Node{index, v, 1, n, nil, nil}
+		n.right = &Node{index, v, 1, n.rank + 1, n, nil, nil}
 		n.size++
 		return true
 	}
@@ -41,7 +42,7 @@ func (*Tree) insertTree(t *Tree, v int) bool {
 	length := t.lengthNode
 
 	if t.root == nil {
-		t.root = &Node{t.lengthNode, v, 1, nil, nil, nil}
+		t.root = &Node{t.lengthNode, v, 1, 1, nil, nil, nil}
 		t.lengthNode++
 		return true
 	}
@@ -60,6 +61,20 @@ func binarySearchNode(n *Node, k int) bool {
 	} else {
 		return binarySearchNode(n.right, k)
 	}
+}
+
+func useLoopSearch(n *Node, k int) *Node {
+	node := n
+	for node != nil {
+		if k == node.value {
+			return n
+		} else if k <= node.value {
+			node = node.left
+		} else {
+			node = node.right
+		}
+	}
+	return node
 }
 
 func searchValue(t *Tree, k int) bool {
