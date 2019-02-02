@@ -115,15 +115,27 @@ func insert(n *Node, key int) *Node {
 
 }
 
+func minValueNode(n *Node) *Node {
+	current := n
+	for current.left != nil {
+		current = current.left
+	}
+	return current
+}
+
 func main() {
 	n := newNode(10)
 	fmt.Println("new node:", n)
-	// insert(n, 9)
-	n = insert(n, 20)
-	n = insert(n, 30)
-	n = insert(n, 40)
-	n = insert(n, 50)
-	n = insert(n, 25)
+	n = insert(n, 11)
+	// n = insert(n, 9)
+	fmt.Println("")
+	print(n)
+	n = leftRotate(n)
+	// n = insert(n, 20)
+	// n = insert(n, 30)
+	// n = insert(n, 40)
+	// n = insert(n, 50)
+	// n = insert(n, 25)
 	fmt.Println("")
 	print(n)
 }
